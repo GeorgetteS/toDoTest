@@ -5,10 +5,11 @@ import { Row } from '../../../../shared/ui/Row';
 
 import styles from './TaskRow.module.scss';
 
-export const TaskRow = ({ data, titleHref }) => {
+export const TaskRow = ({ data, titleHref, after }) => {
   return (
     <Row className={cn(styles.root, { [styles.completed]: data.completed })}>
       {titleHref ? <Link to={titleHref}>{data.title}</Link> : data.title}
+      {after}
     </Row>
   );
 };

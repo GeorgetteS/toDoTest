@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import styles from './Checkbox.module.scss';
 
-const Checkbox = ({ label, withStatus, onChange }) => {
+export const Checkbox = ({ label, withStatus, onChange }) => {
   const [checked, setChecked] = useState(withStatus);
 
   const handleClick = () => {
@@ -25,5 +25,3 @@ const Checkbox = ({ label, withStatus, onChange }) => {
     </div>
   );
 };
-
-export default Checkbox;
