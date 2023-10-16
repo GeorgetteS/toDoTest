@@ -1,0 +1,42 @@
+.checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  &Icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
+    transition: all 0.3s ease;
+
+    svg {
+      fill: none;
+      stroke: #fff;
+      stroke-width: 2px;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    &.checked {
+      border-color: #1890ff;
+      background-color: #1890ff;
+
+      svg {
+        visibility: visible;
+      }
+    }
+  }
+
+  &Label {
+    margin-left: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+}

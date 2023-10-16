@@ -1,8 +1,11 @@
 import './index.scss';
+
+import { Routing } from '../pages';
+
 import { withProviders } from './providers';
 
 const App = () => {
-  return <div>hello world!</div>;
+  return <Routing />;
 };
 
 export default withProviders(App);
