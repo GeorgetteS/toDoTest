@@ -4,7 +4,7 @@ export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async function (_, { rejectWithValue }) {
     try {
-      const response = await fetch(process.env.REACT_APP_BASE_URL + '/todos?_limit=10');
+      const response = await fetch(process.env.REACT_APP_BASE_URL + '/todos');
 
       if (!response.ok) {
         throw new Error('Server Error!');
@@ -38,19 +38,24 @@ export const deletetask = createAsyncThunk(
   },
 );
 
-export const toggleStatus = createAsyncThunk(
-  'tasks/toggleStatus',
-  async function (id, { rejectWithValue, dispatch, getState }) {
-    const task = getState().tasks.tasks.find((task) => task.id === id);
-
+export const updateTask = createAsyncThunk(
+  'tasks/updateTask',
+  async function (
+    { id, title, description, dueDate, completed },
+    { rejectWithValue, dispatch, getState },
+  ) {
     try {
-      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos/${id}`, {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          completed: !task.completed,
+          id,
+          title,
+          description,
+          dueDate,
+          completed,
         }),
       });
 
@@ -58,7 +63,9 @@ export const toggleStatus = createAsyncThunk(
         throw new Error("Can't toggle status. Server error.");
       }
 
-      dispatch(toggleComplete({ id }));
+      const data = await response.json();
+
+      dispatch(changeTask(data));
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -111,9 +118,12 @@ const taskSlice = createSlice({
     addtask(state, action) {
       state.tasks.push(action.payload);
     },
-    toggleComplete(state, action) {
-      const toggledtask = state.tasks.find((task) => task.id === action.payload.id);
-      toggledtask.completed = !toggledtask.completed;
+    changeTask(state, action) {
+      const changedTask = state.tasks.find((task) => task.id === action.payload.id);
+      changedTask.completed = action.payload.completed;
+      changedTask.title = action.payload.title;
+      changedTask.description = action.payload.description;
+      changedTask.dueDate = action.payload.dueDate;
     },
     removetask(state, action) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
@@ -132,6 +142,6 @@ const taskSlice = createSlice({
   },
 });
 
-const { addtask, toggleComplete, removetask } = taskSlice.actions;
+const { addtask, changeTask, removetask } = taskSlice.actions;
 
 export default taskSlice.reducer;
