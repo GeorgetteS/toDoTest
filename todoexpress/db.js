@@ -8,7 +8,12 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: process.env.DB_DIALECT,
-    ssl: true,
+    ssl: process.env.IS_REQUIRE_SSL,
+    dialectOptions: {
+      ssl: {
+        require: process.env.IS_REQUIRE_SSL,
+      },
+    },
   },
 );
 export default sequelize;
