@@ -20,7 +20,7 @@ export const TaskColumn = ({ searchValue }) => {
   }, [dispatch]);
 
   if (status === 'loading') return <Spin />;
-  if (error) return <p>error.message</p>;
+  if (error) return <p>{error.message}</p>;
   return (
     <>
       {tasks &&

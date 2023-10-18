@@ -10,7 +10,7 @@ import styles from './TaskConstructor.module.scss';
 import { addNewtask } from '../../redux/Task/TaskSlice';
 import { Button } from '../../shared/ui/Button';
 
-export const TaskConstructor = () => {
+export const TaskConstructor = ({ disabled }) => {
   const [taskText, setTaskText] = useState('');
 
   const dispath = useDispatch();
@@ -25,6 +25,7 @@ export const TaskConstructor = () => {
       <Input
         value={taskText}
         onEnter={addTask}
+        disabled={disabled}
         onChange={(e) => setTaskText(e.target.value)}></Input>
       <Button onClick={addTask}> Добавить </Button>
     </Row>
