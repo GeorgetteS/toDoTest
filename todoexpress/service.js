@@ -32,7 +32,7 @@ class TaskService {
       },
     );
 
-    const updatedTask = await Task.findOne({ where: id });
+    const updatedTask = await Task.findOne({ where: { id } });
 
     return updatedTask;
   }

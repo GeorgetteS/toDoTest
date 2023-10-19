@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
       </header>
       <main className={styles.content}>{children}</main>
       <footer className={styles.footer}>
-        <p className={styles.footerText}>© 2023 Todo App. All rights reserved.</p>
+        <p className={styles.footerText}>© 2023 Todo App. For REON.</p>
       </footer>
     </div>
   );

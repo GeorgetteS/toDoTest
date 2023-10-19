@@ -2,9 +2,9 @@ import React from 'react';
 
 import styles from './Input.module.scss';
 
-export const Input = ({ type = 'text', value, onChange, placeholder, onEnter, disabled }) => {
+export const Input = ({ type = 'text', value = '', onChange, placeholder, onEnter, disabled }) => {
   const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && onEnter) {
       onEnter();
     }
   };

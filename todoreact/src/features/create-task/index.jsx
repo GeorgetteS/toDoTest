@@ -11,9 +11,5 @@ export const CreateTask = ({ taskValue, onCreate }) => {
     onCreate();
   };
 
-  return (
-    <>
-      <Button onClick={addTask}> Добавить </Button>
-    </>
-  );
+  return <>{<Button onClick={addTask}> Добавить </Button>}</>;
 };

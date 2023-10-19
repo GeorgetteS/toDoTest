@@ -26,6 +26,7 @@ export const TaskConstructor = ({ disabled }) => {
         value={taskText}
         onEnter={addTask}
         disabled={disabled}
+        placeholder={'Добавить задачу'}
         onChange={(e) => setTaskText(e.target.value)}></Input>
       <Button onClick={addTask}> Добавить </Button>
     </Row>

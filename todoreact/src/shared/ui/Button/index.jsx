@@ -1,10 +1,11 @@
 import React from 'react';
+import cn from 'classnames';
 
 import styles from './Button.module.scss';
 
-export const Button = ({ children, onClick }) => {
+export const Button = ({ children, className, onClick, disabled }) => {
   return (
-    <button className={styles.button} onClick={onClick}>
+    <button className={cn(styles.button, className)} disabled={disabled} onClick={onClick}>
       {children}
     </button>
   );

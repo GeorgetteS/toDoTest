@@ -8,5 +8,5 @@ router.get('/todos', TaskController.getTasks);
 router.get('/todos/:id', TaskController.getTask);
 
 router.post('/todos', TaskController.createTask);
-router.patch('/todos', TaskController.updateTask);
+router.patch('/todos/:id', TaskController.updateTask);
 router.delete('/todos/:id', TaskController.deleteTask);

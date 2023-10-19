@@ -6,9 +6,10 @@ import { fetchTasks } from '../../redux/Task/TaskSlice';
 import { TaskRow } from '../../entities/task/ui/Task-row';
 import { Spin } from '../../shared/ui/Spin';
 import { taskSelector } from '../../redux/Task/TaskSelector';
-import { ToggleTask } from '../../features/toggle-task';
+
 import { DeleteTask } from '../../features/delete-task';
 import { Row } from '../../shared/ui/Row';
+import { ToggleTask } from '../../features/toggle-task';
 
 export const TaskColumn = ({ searchValue }) => {
   const { status, error, tasks } = useSelector(taskSelector());

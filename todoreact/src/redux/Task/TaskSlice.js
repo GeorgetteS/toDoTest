@@ -19,6 +19,24 @@ export const fetchTasks = createAsyncThunk(
   },
 );
 
+export const fetchSingleTask = createAsyncThunk(
+  'tasks/fetchSingleTask',
+  async function (id, { rejectWithValue }) {
+    try {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos/${id}`);
+
+      if (!response.ok) {
+        throw new Error('Server Error!');
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
 export const deletetask = createAsyncThunk(
   'tasks/deletetask',
   async function (id, { rejectWithValue, dispatch }) {
@@ -45,13 +63,12 @@ export const updateTask = createAsyncThunk(
     { rejectWithValue, dispatch, getState },
   ) {
     try {
-      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos`, {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          id,
           title,
           description,
           dueDate,
@@ -60,12 +77,39 @@ export const updateTask = createAsyncThunk(
       });
 
       if (!response.ok) {
-        throw new Error("Can't toggle status. Server error.");
+        throw new Error("Can't update task. Server error.");
       }
 
       const data = await response.json();
 
-      dispatch(changeTask(data));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const toggleStatus = createAsyncThunk(
+  'tasks/toggleStatus',
+  async function (id, { rejectWithValue, dispatch, getState }) {
+    const task = getState().tasks.tasks.find((task) => task.id === id);
+
+    try {
+      const response = await fetch(process.env.REACT_APP_BASE_URL + `/todos/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          completed: !task.completed,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Can't toggle status. Server error.");
+      }
+
+      dispatch(toggleComplete({ id }));
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -110,6 +154,7 @@ const setError = (state, action) => {
 const taskSlice = createSlice({
   name: 'tasks',
   initialState: {
+    currentTask: {},
     tasks: [],
     status: null,
     error: null,
@@ -118,30 +163,64 @@ const taskSlice = createSlice({
     addtask(state, action) {
       state.tasks.push(action.payload);
     },
-    changeTask(state, action) {
-      const changedTask = state.tasks.find((task) => task.id === action.payload.id);
-      changedTask.completed = action.payload.completed;
-      changedTask.title = action.payload.title;
-      changedTask.description = action.payload.description;
-      changedTask.dueDate = action.payload.dueDate;
+
+    toggleComplete(state, action) {
+      const toggledtask = state.tasks.find((task) => task.id === action.payload.id);
+      toggledtask.completed = !toggledtask.completed;
     },
     removetask(state, action) {
       state.tasks = state.tasks.filter((task) => task.id !== action.payload.id);
     },
   },
-  extraReducers: {
-    [fetchTasks.pending]: (state) => {
-      state.status = 'loading';
-      state.error = null;
-    },
-    [fetchTasks.fulfilled]: (state, action) => {
-      state.status = 'resolved';
-      state.tasks = action.payload;
-    },
-    [fetchTasks.rejected]: setError,
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTasks.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        state.status = 'resolved';
+        state.tasks = action.payload;
+      })
+      .addCase(fetchTasks.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.error.message;
+      })
+      .addCase(fetchSingleTask.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(fetchSingleTask.fulfilled, (state, action) => {
+        state.status = 'resolved';
+
+        const newTask = {
+          completed: action.payload.completed,
+          title: action.payload.title,
+          description: action.payload.description || '',
+          dueDate: action.payload.dueDate || '',
+        };
+
+        state.currentTask = newTask;
+      })
+      .addCase(fetchSingleTask.rejected, (state, action) => {
+        state.status = 'rejected';
+        state.error = action.error.message;
+      })
+      .addCase(updateTask.fulfilled, (state, action) => {
+        state.status = 'resolved';
+
+        const newTask = {
+          completed: action.payload.completed,
+          title: action.payload.title,
+          description: action.payload.description || '',
+          dueDate: action.payload.dueDate || '',
+        };
+
+        state.currentTask = newTask;
+      });
   },
 });
 
-const { addtask, changeTask, removetask } = taskSlice.actions;
+const { addtask, removetask, toggleComplete } = taskSlice.actions;
 
 export default taskSlice.reducer;
